@@ -1,1 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>𝖋𝖔𝖗 𝖞𝖔𝖚 𝖇𝖆𝖇𝖞</title>
+<style>
+:root{--card-bg:rgba(255,255,255,0.05);--accent:#fff;--muted:rgba(255,255,255,0.08)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:#000;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial;
+  text-align:center;overflow:hidden;
+}
+.heart{position:fixed;top:-10px;color:var(--accent);font-size:20px;opacity:0.9;pointer-events:none;z-index:0;animation:fall linear infinite}
+@keyframes fall{0%{transform:translateY(0) scale(1);opacity:0.95}100%{transform:translateY(120vh) scale(1.4);opacity:0}}
+#card{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92%;max-width:420px;padding:26px;border-radius:18px;background:var(--card-bg);backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,0.6),0 0 60px rgba(255,255,255,0.03);z-index:5
+}
+#question{font-weight:700;letter-spacing:1px;font-size:18px;margin-bottom:14px}
+#nameInput{width:100%;padding:14px;border-radius:14px;border:none;background:rgba(255,255,255,0.03);color:var(--accent);font-size:16px;text-align:center;outline:none;box-shadow:inset 0 0 18px rgba(255,255,255,0.02);transition:.3s}
+.choiceRow{display:flex;gap:10px;margin-top:18px}
+.choice{flex:1;padding:12px;border-radius:14px;border:none;background:transparent;color:var(--accent);font-weight:700;font-size:15px;cursor:pointer;position:relative;overflow:hidden;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.04)}
+.msg{margin-top:16px;font-weight:600;opacity:0.95}
+.msg.error{color:#ffb4d4}
+.next{margin-top:18px;padding:10px 18px;border-radius:12px;border:none;background:transparent;color:var(--accent);font-weight:800;font-size:18px;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+.hidden{display:none}
+</style>
+</head>
+<body>
 
+<div id="card">
+  <div id="question">𝐖𝐇𝐀𝐓'𝐒 𝐘𝐎𝐔𝐑 𝐍𝐀𝐌𝐄 𝐁𝐀𝐁𝐘‽</div>
+  <input id="nameInput" placeholder="𝐓𝐘𝐏𝐄 𝐘𝐎𝐔𝐑 𝐅𝐔𝐋𝐋 𝐍𝐀𝐌𝐄 <3" autocomplete="off" />
+  <button id="enterBtn" class="next" style="margin-top:12px;">几乇乂ㄒ</button>
+
+  <div id="msg" class="msg hidden"></div>
+  <div id="choiceWrap" class="hidden">
+    <div class="choiceRow">
+      <button id="leftBtn" class="choice">LEFT</button>
+      <button id="rightBtn" class="choice">RIGHT</button>
+    </div>
+  </div>
+  <div id="nextWrap"></div>
+</div>
+
+<script>
+const correctName = "siti nafisah cahyanti";
+const questionEl = document.getElementById('question');
+const nameInput = document.getElementById('nameInput');
+const msgEl = document.getElementById('msg');
+const choiceWrap = document.getElementById('choiceWrap');
+const nextWrap = document.getElementById('nextWrap');
+const enterBtn = document.getElementById('enterBtn');
+const leftBtn = document.getElementById('leftBtn');
+const rightBtn = document.getElementById('rightBtn');
+
+function showMsg(t,err=false){ msgEl.textContent=t; msgEl.className='msg'+(err?' error':''); msgEl.classList.remove('hidden'); }
+function hideMsg(){ msgEl.classList.add('hidden'); }
+function clearNext(){ nextWrap.innerHTML=''; }
+function setNext(label, fn){ clearNext(); const b=document.createElement('button'); b.className='next'; b.innerText=label; b.onclick=window[fn]; nextWrap.appendChild(b); }
+
+nameInput.addEventListener('keydown',e=>{ if(e.key==='Enter') validateName(); });
+enterBtn.onclick = ()=>validateName();
+
+function removeNameUI(){
+  nameInput.style.opacity = "0";
+  enterBtn.style.opacity = "0";
+  setTimeout(()=>{ nameInput.remove(); enterBtn.remove(); },300);
+}
+
+function validateName(){
+  const v = (nameInput.value||'').trim().toLowerCase();
+  if(v === correctName){
+    hideMsg(); removeNameUI();
+    questionEl.textContent='𝐃𝐄𝐃𝐄 𝐒𝐀𝐘𝐀𝐍𝐆 𝐆𝐀 𝐒𝐀𝐌𝐀 𝐌𝐀𝐒‽';
+    leftBtn.textContent='𝐒𝐀𝐘𝐀𝐍𝐆 𝐃𝐎𝐍𝐆';
+    rightBtn.textContent='𝐒𝐀𝐘𝐀𝐍𝐆 𝐁𝐀𝐍𝐆𝐄𝐓';
+    choiceWrap.classList.remove('hidden');
+
+    leftBtn.onclick = ()=>{ showMsg('𝐁𝐀𝐍𝐃𝐄𝐄𝐄𝐄𝐄𝐄𝐋 𝐉𝐀𝐖𝐀𝐁 𝐘𝐀𝐍𝐆 𝐁𝐄𝐍𝐄𝐑 !!',true); clearNext(); };
+    rightBtn.onclick = ()=>{
+      hideMsg(); choiceWrap.classList.add('hidden');
+      questionEl.textContent='𝐘𝐀𝐀 𝐌𝐀𝐒 𝐓𝐀𝐔 𝐒𝐀𝐘𝐀𝐍𝐆. 𝐌𝐀𝐒 𝐋𝐄𝐁𝐈𝐇 𝐒𝐀𝐘𝐀𝐍𝐆 𝐃𝐄𝐃𝐄 𝐋𝐄𝐁𝐈𝐇 𝐃𝐀𝐑𝐈 𝐀𝐏𝐀𝐏𝐔𝐍 𝐈 𝐋𝐎𝐕𝐄𝐄 𝐘𝐎𝐔𝐔 𝐒𝐎𝐎 𝐌𝐔𝐂𝐇 🫶🤍';
+      setNext('几乇乂ㄒ','qJanji');
+    };
+  } else { showMsg('𝐒𝐀𝐋𝐀𝐇 𝐒𝐀𝐘𝐀𝐍𝐆 𝐈𝐒𝐈 𝐘𝐀𝐍𝐆 𝐁𝐄𝐍𝐄𝐑 𝐃𝐎𝐍𝐆 🤍',true); }
+}
+
+function qJanji(){
+  hideMsg();
+  questionEl.textContent='𝐃𝐄𝐃𝐄 𝐉𝐀𝐍𝐉𝐈 𝐍𝐃𝐀 𝐁𝐎𝐋𝐄 𝐁𝐀𝐍𝐃𝐄𝐋 𝐘𝐀𝐇‽';
+  choiceWrap.classList.remove('hidden'); clearNext();
+  leftBtn.textContent='𝐍𝐃𝐀 𝐌𝐀𝐔 𝐖𝐋𝐄 😝';
+  rightBtn.textContent='𝐈𝐘𝐀 𝐌𝐀𝐒 🤍';
+  leftBtn.onclick=()=>showMsg('𝐌𝐀𝐒 𝐁𝐈𝐋𝐀𝐍𝐆 𝐍𝐃𝐀𝐀𝐀 𝐁𝐎𝐋𝐄𝐄𝐄𝐄𝐄𝐄 𝐁𝐀𝐍𝐃𝐄𝐄𝐋 😒',true);
+  rightBtn.onclick=()=>{
+    hideMsg(); choiceWrap.classList.add('hidden');
+    questionEl.textContent='𝐃𝐄𝐃𝐄 𝐇𝐀𝐑𝐔𝐒 𝐍𝐔𝐑𝐔𝐓 𝐓𝐄𝐑𝐔𝐒 𝐒𝐀𝐌𝐀 𝐌𝐀𝐒 𝐌𝐀𝐒𝐈𝐇 𝐁𝐀𝐋𝐈𝐓𝐀 𝐆𝐀 𝐁𝐎𝐋𝐄𝐇 𝐍𝐆𝐄𝐋𝐀𝐖𝐀𝐍 𝐒𝐀𝐌𝐀 𝐘𝐀𝐍𝐆 𝐁𝐈𝐌𝐁𝐄𝐋 😝😝';
+    setNext('几乇乂ㄒ','qUmur');
+  };
+}
+
+function qUmur(){
+  hideMsg(); questionEl.textContent='𝐁𝐄𝐑𝐀𝐏𝐀 𝐔𝐌𝐔𝐑 𝐃𝐄𝐃𝐄‽';
+  choiceWrap.classList.remove('hidden'); clearNext();
+  leftBtn.textContent='5'; rightBtn.textContent='27';
+  leftBtn.onclick=()=>{
+    hideMsg(); choiceWrap.classList.add('hidden');
+    questionEl.textContent='𝐘𝐀𝐀 𝐌𝐀𝐒 𝐓𝐀𝐔 𝐃𝐄𝐃𝐄 𝐌𝐀𝐒𝐈𝐇 𝟓 𝐓𝐀𝐇𝐔𝐍 𝐌𝐀𝐔 𝐁𝐄𝐂𝐀𝐔𝐒𝐄 𝐌𝐀𝐔 𝐁𝐄𝐑𝐀𝐏𝐀 𝐏𝐔𝐍 𝐔𝐌𝐔𝐑 𝐃𝐄𝐃𝐄. 𝐃𝐈 𝐃𝐄𝐏𝐀𝐍 𝐌𝐀𝐒 𝐃𝐄𝐃𝐄 𝐓𝐄𝐏𝐀𝐏 𝐋𝐀𝐇 𝐁𝐎𝐂𝐈𝐋 𝐘𝐀𝐍𝐆 𝐌𝐀𝐒𝐈𝐇 𝐁𝐔𝐓𝐔𝐇 𝐁𝐈𝐌𝐁𝐈𝐍𝐆𝐀𝐍 𝐀𝐊𝐒𝐉𝐀𝐊𝐒𝐉𝐊 🤍🫶';
+    setNext('几乇乂ㄒ','showCobaButton');
+  };
+  rightBtn.onclick=()=>showMsg('𝐃𝐀𝐋𝐀𝐌 𝐇𝐀𝐓𝐈 : 𝐈𝐇 𝐄𝐌𝐀𝐍𝐆 𝐃𝐄𝐃𝐄 𝐁𝐎𝐂𝐈𝐋 😭',true);
+}
+
+let clickCount=0;
+function showCobaButton(){
+  clearNext();
+  const cobaBtn=document.createElement('button');
+  cobaBtn.className='next'; cobaBtn.innerText='𝐂𝐎𝐁𝐀 𝐏𝐄𝐍𝐂𝐄𝐓 5 𝐊𝐀𝐋𝐈 <3';
+  nextWrap.appendChild(cobaBtn);
+  cobaBtn.onclick=()=>{
+    clickCount++;
+    if(clickCount>=5){ showHandwritingTab(); }
+  };
+}
+
+function showHandwritingTab(){
+  document.getElementById('card').innerHTML = '';
+  const area=document.createElement('div');
+  area.style.marginTop='20px';
+  area.style.fontSize='18px';
+  area.style.lineHeight='1.8';
+  area.style.fontWeight='600';
+  area.style.whiteSpace='pre-wrap';
+  area.style.opacity='0.95';
+  document.getElementById('card').appendChild(area);
+
+  const text=[
+`𝐌𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐂𝐘 𝐘𝐀𝐀𝐀𝐀𝐀𝐀 𝐒𝐀𝐘𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐍𝐆 𝐔𝐃𝐀𝐀𝐀𝐀𝐀𝐀𝐀 𝐌𝐀𝐔𝐔𝐔 𝐁𝐄𝐑𝐓𝐀𝐇𝐀𝐍 𝐒𝐀𝐌𝐀𝐀𝐀 𝐌𝐀𝐒 𝐒𝐀𝐌𝐏𝐄𝐄𝐄𝐄 𝐃𝐄𝐓𝐈𝐊 𝐈𝐍𝐈. 𝐌𝐀𝐒 𝐁𝐄𝐍𝐄𝐑 𝐁𝐄𝐍𝐄𝐑 𝐁𝐀𝐍𝐆𝐆𝐀𝐀𝐀 𝐁𝐀𝐍𝐆𝐄𝐓 𝐏𝐔𝐍𝐘𝐀𝐀𝐀𝐀 𝐃𝐄𝐃𝐄𝐄𝐄𝐄𝐄𝐄. 𝐉𝐀𝐃𝐈𝐈𝐍 𝐃𝐄𝐃𝐄𝐄𝐄𝐄 𝐒𝐄𝐁𝐀𝐆𝐀𝐈 𝐏𝐀𝐒𝐀𝐍𝐆𝐀𝐍 𝐒𝐄𝐇𝐈𝐃𝐔𝐏 𝐒𝐄𝐌𝐀𝐓𝐈 𝐌𝐀𝐒.`,
+`𝐌𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐂𝐘 𝐉𝐔𝐆𝐀𝐀𝐀𝐀 𝐔𝐃𝐀𝐀𝐀𝐀 𝐒𝐄𝐌𝐏𝐄𝐓𝐈𝐍 𝐉𝐀𝐖𝐀𝐁 𝐒𝐄𝐌𝐔𝐀𝐀𝐀 𝐏𝐄𝐑𝐓𝐀𝐍𝐘𝐀𝐀𝐍 𝐃𝐀𝐑𝐈 𝐌𝐀𝐒 𝐗𝐈𝐗𝐈𝐗𝐈. 𝐌𝐀𝐒 𝐇𝐀𝐑𝐀𝐏 𝐃𝐄𝐃𝐄𝐄𝐄 𝐒𝐔𝐊𝐀𝐀 𝐘𝐀𝐀𝐀𝐀𝐇`,
+`𝐃𝐀𝐍 𝐌𝐀𝐒 𝐁𝐄𝐍𝐄𝐑 𝐁𝐄𝐍𝐄𝐑 𝐌𝐈𝐍𝐓𝐀𝐀𝐀 𝐌𝐀𝐀𝐅 𝐊𝐀𝐋𝐎𝐎𝐎 𝐊𝐀𝐃𝐀𝐍𝐆 𝐌𝐀𝐒 𝐍𝐆𝐄𝐁𝐔𝐀𝐓 𝐃𝐄𝐃𝐄𝐄 𝐍𝐀𝐍𝐆𝐈𝐒 𝐃𝐄𝐃𝐄𝐄 𝐒𝐄𝐃𝐈𝐇. 𝐌𝐀𝐀𝐅𝐈𝐍 𝐌𝐀𝐒.`,
+`𝐈 𝐋𝐎𝐕𝐄𝐄𝐄 𝐘𝐎𝐔𝐔𝐔𝐔𝐔𝐔 𝐃𝐄𝐃𝐄𝐄𝐄 𝐌𝐎𝐑𝐄𝐄𝐄 𝐓𝐇𝐀𝐍 𝐘𝐎𝐔 𝐊𝐍𝐎𝐖 𝐌𝐖𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐇`
+  ];
+
+  let p=0;
+  function typePara(){
+    if(p>=text.length) return;
+    let t=text[p]; 
+    let i=0; 
+    let cur=document.createElement('div'); 
+    cur.style.marginBottom='16px';
+    area.appendChild(cur);
+    function typeChar(){
+      if(i<t.length){
+        cur.textContent+=t[i];
+        i++;
+        setTimeout(typeChar,35 + Math.random()*20);
+      } else {
+        p++;
+        setTimeout(typePara,600);
+      }
+    }
+    typeChar();
+  }
+  typePara();
+}
+
+/* ---------------- hearts ---------------- */
+setInterval(()=>{
+  const h=document.createElement('div');
+  h.className='heart';
+  h.textContent='🤍';
+  h.style.left=Math.random()*100+'vw';
+  h.style.animationDuration=(3+Math.random()*3)+'s';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),4500);
+},300);
+</script>
+</body>
+  </html>
