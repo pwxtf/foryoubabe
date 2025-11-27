@@ -1,181 +1,316 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>𝖋𝖔𝖗 𝖞𝖔𝖚 𝖇𝖆𝖇𝖞</title>
+<meta charset="UTF-8">
+<title>𝖋𝖔𝖚𝖗 𝖒𝖔𝖓𝖙</title>
+
 <style>
-:root{--card-bg:rgba(255,255,255,0.05);--accent:#fff;--muted:rgba(255,255,255,0.08)}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Courier New',monospace;
+}
+
 body{
-  background:#000;color:var(--accent);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial;
-  text-align:center;overflow:hidden;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:#fff;
+overflow:hidden;
+background:black;
 }
-.heart{position:fixed;top:-10px;color:var(--accent);font-size:20px;opacity:0.9;pointer-events:none;z-index:0;animation:fall linear infinite}
-@keyframes fall{0%{transform:translateY(0) scale(1);opacity:0.95}100%{transform:translateY(120vh) scale(1.4);opacity:0}}
-#card{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:92%;max-width:420px;padding:26px;border-radius:18px;background:var(--card-bg);backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,0.6),0 0 60px rgba(255,255,255,0.03);z-index:5
+
+/* VIDEO BG */
+video{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-1;
+filter:brightness(30%);
 }
-#question{font-weight:700;letter-spacing:1px;font-size:18px;margin-bottom:14px}
-#nameInput{width:100%;padding:14px;border-radius:14px;border:none;background:rgba(255,255,255,0.03);color:var(--accent);font-size:16px;text-align:center;outline:none;box-shadow:inset 0 0 18px rgba(255,255,255,0.02);transition:.3s}
-.choiceRow{display:flex;gap:10px;margin-top:18px}
-.choice{flex:1;padding:12px;border-radius:14px;border:none;background:transparent;color:var(--accent);font-weight:700;font-size:15px;cursor:pointer;position:relative;overflow:hidden;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.04)}
-.msg{margin-top:16px;font-weight:600;opacity:0.95}
-.msg.error{color:#ffb4d4}
-.next{margin-top:18px;padding:10px 18px;border-radius:12px;border:none;background:transparent;color:var(--accent);font-weight:800;font-size:18px;cursor:pointer;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
-.hidden{display:none}
+
+/* LOGIN */
+#login{
+position:absolute;
+text-align:center;
+}
+
+input{
+padding:12px;
+background:black;
+border:2px solid hotpink;
+color:hotpink;
+outline:none;
+font-size:18px;
+text-align:center;
+letter-spacing:2px;
+}
+
+button{
+margin-top:12px;
+padding:10px 25px;
+background:black;
+border:1px solid hotpink;
+color:hotpink;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+background:hotpink;
+color:black;
+}
+
+/* CONTENT */
+#content{
+display:none;
+width:85%;
+max-width:900px;
+text-align:center;
+animation:fadeIn 2s;
+position:relative;
+top:-6%;
+}
+
+/* TEXT STYLE AESTHETIC */
+.textbox{
+font-size:20px;
+line-height:1.9;
+letter-spacing:.5px;
+color:white;
+text-shadow:0 0 10px rgba(255,105,180,.5);
+animation:neonPulse 3.5s infinite alternate;
+}
+
+/* NEXT */
+#next{
+margin-top:28px;
+display:none;
+font-size:16px;
+}
+
+@keyframes fadeIn{
+from{opacity:0; transform:scale(.96)}
+to{opacity:1; transform:scale(1)}
+}
+
+@keyframes neonPulse{
+from{ text-shadow:0 0 8px hotpink; }
+to{ text-shadow:0 0 20px deeppink; }
+}
+
+/* ===== MUSIC PLAYER UI (LEFT SIDE) ===== */
+#musicPlayer{
+  position:fixed;
+  top:15px;
+  left:15px;
+  display:flex;
+  align-items:center;
+  z-index:9999;
+  gap:10px; /* tambah jarak antara star dan controls */
+}
+
+#star{
+  font-size:26px;
+  cursor:pointer;
+  color:hotpink;
+  text-shadow:0 0 10px hotpink;
+  transition:.3s;
+}
+
+#star:hover{
+  transform:scale(1.2);
+}
+
+#controls{
+  display:none;
+  background:rgba(0,0,0,.6);
+  border:1px solid hotpink;
+  border-radius:20px;
+  padding:6px 10px;
+}
+
+#controls button{
+  background:none;
+  border:none;
+  color:hotpink;
+  font-size:16px;
+  margin:0 6px;
+  cursor:pointer;
+}
+
+#controls button:hover{
+  color:white;
+}
 </style>
 </head>
+
 <body>
 
-<div id="card">
-  <div id="question">𝐖𝐇𝐀𝐓'𝐒 𝐘𝐎𝐔𝐑 𝐍𝐀𝐌𝐄 𝐁𝐀𝐁𝐘‽</div>
-  <input id="nameInput" placeholder="𝐓𝐘𝐏𝐄 𝐘𝐎𝐔𝐑 𝐅𝐔𝐋𝐋 𝐍𝐀𝐌𝐄 <3" autocomplete="off" />
-  <button id="enterBtn" class="next" style="margin-top:12px;">几乇乂ㄒ</button>
-
-  <div id="msg" class="msg hidden"></div>
-  <div id="choiceWrap" class="hidden">
-    <div class="choiceRow">
-      <button id="leftBtn" class="choice">LEFT</button>
-      <button id="rightBtn" class="choice">RIGHT</button>
-    </div>
+<!-- MUSIC PLAYER -->
+<div id="musicPlayer">
+  <div id="star" onclick="togglePlayer()">𖤐</div>
+  <div id="controls">
+    <button onclick="prevSong()">◃◃</button>
+    <button onclick="togglePlay()">ⅠⅠ</button>
+    <button onclick="nextSong()">▹▹</button>
+    <button onclick="toggleLoop()">↻</button>
   </div>
-  <div id="nextWrap"></div>
+</div>
+
+<audio id="audio"></audio>
+<!-- END MUSIC PLAYER -->
+
+<video autoplay muted loop>
+<source src="xyz.mp4" type="video/mp4">
+</video>
+
+<div id="login">
+<h2 class="textbox">𝐄𝐍𝐓𝐄𝐑 𝐏𝐀𝐒𝐒𝐖𝐎𝐑𝐃 !!</h2><br>
+<input id="pw" type="password" placeholder="𝖔𝖚𝖗 𝖜𝖊𝖉𝖉𝖎𝖓𝖌 𝖉𝖆𝖙𝖊">
+<br>
+<button onclick="check()">𝖚𝖓𝖑𝖔𝖈𝖐</button>
+</div>
+
+<div id="content">
+<div id="text" class="textbox"></div>
+<button id="next" onclick="nextText()">几乇乂ㄒ</button>
 </div>
 
 <script>
-const correctName = "siti nafisah cahyanti";
-const questionEl = document.getElementById('question');
-const nameInput = document.getElementById('nameInput');
-const msgEl = document.getElementById('msg');
-const choiceWrap = document.getElementById('choiceWrap');
-const nextWrap = document.getElementById('nextWrap');
-const enterBtn = document.getElementById('enterBtn');
-const leftBtn = document.getElementById('leftBtn');
-const rightBtn = document.getElementById('rightBtn');
+const password="27-07-2025";
 
-function showMsg(t,err=false){ msgEl.textContent=t; msgEl.className='msg'+(err?' error':''); msgEl.classList.remove('hidden'); }
-function hideMsg(){ msgEl.classList.add('hidden'); }
-function clearNext(){ nextWrap.innerHTML=''; }
-function setNext(label, fn){ clearNext(); const b=document.createElement('button'); b.className='next'; b.innerText=label; b.onclick=window[fn]; nextWrap.appendChild(b); }
+const p=[
 
-nameInput.addEventListener('keydown',e=>{ if(e.key==='Enter') validateName(); });
-enterBtn.onclick = ()=>validateName();
+`𝐇𝐀𝐏𝐏𝐘 𝐀𝐍𝐍𝐈𝐕𝐄𝐑𝐒𝐀𝐑𝐘 𝟒 𝐌𝐎𝐍𝐓𝐇 𝐒𝐀𝐘𝐀𝐀𝐀𝐀𝐀𝐀𝐍𝐆
+𝐄𝐌𝐏𝐀𝐓 𝐁𝐔𝐋𝐀𝐍 𝐁𝐔𝐊𝐀𝐍 𝐖𝐀𝐊𝐓𝐔 𝐘𝐀𝐍𝐆 𝐋𝐀𝐌𝐀𝐀𝐀.
+𝐓𝐀𝐏𝐈 𝐁𝐔𝐀𝐓 𝐌𝐀𝐒.. 𝐈𝐍𝐈 𝐂𝐔𝐊𝐔𝐏 𝐁𝐔𝐀𝐓 𝐍𝐆𝐄𝐑𝐀𝐒𝐀𝐀 𝐁𝐀𝐇𝐖𝐀𝐀𝐀𝐀 𝐃𝐄𝐃𝐄𝐄𝐄𝐄 𝐈𝐓𝐔 𝐁𝐄𝐑𝐀𝐑𝐓𝐈 𝐁𝐀𝐍𝐆𝐄𝐓 <3`,
 
-function removeNameUI(){
-  nameInput.style.opacity = "0";
-  enterBtn.style.opacity = "0";
-  setTimeout(()=>{ nameInput.remove(); enterBtn.remove(); },300);
+`𝐌𝐀𝐒 𝐍𝐃𝐀𝐀𝐀 𝐍𝐘𝐀𝐍𝐆𝐊𝐀𝐀𝐀 𝐁𝐈𝐒𝐀𝐀𝐀 𝐒𝐄𝐃𝐄𝐊𝐄𝐓 𝐈𝐍𝐈 𝐒𝐀𝐌𝐀 𝐃𝐄𝐃𝐄𝐄𝐄𝐄
+𝐁𝐈𝐒𝐀𝐀𝐀 𝐍𝐆𝐄𝐑𝐀𝐒𝐀𝐀 𝐓𝐄𝐍𝐀𝐍𝐆 𝐂𝐔𝐌𝐀  𝐃𝐀𝐑𝐈  𝐒𝐀𝐓𝐔𝐔𝐔  𝐇𝐀𝐃𝐈𝐑
+𝐁𝐈𝐒𝐀 𝐒𝐄𝐍𝐀𝐍𝐆  𝐂𝐔𝐌𝐀 𝐊𝐀𝐑𝐄𝐍𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀  𝐏𝐄𝐒𝐀𝐍  𝐒𝐈𝐍𝐆𝐊𝐀𝐓  𝐃𝐀𝐑𝐈  𝐃𝐄𝐃𝐄𝐄𝐄𝐄𝐄𝐄𝐄𝐄𝐄𝐄.`,
+
+`𝐃𝐀𝐑𝐈  𝐇𝐀𝐑𝐈  𝐊𝐄  𝐇𝐀𝐑𝐈
+𝐌𝐀𝐒  𝐌𝐔𝐋𝐀𝐈  𝐍𝐄𝐌𝐔  𝐁𝐀𝐍𝐘𝐀𝐀𝐀𝐀  𝐇𝐀𝐋  𝐊𝐄𝐂𝐈𝐋
+𝐘𝐀𝐍𝐆  𝐁𝐈𝐊𝐈𝐍  𝐌𝐀𝐒  𝐌𝐀𝐊𝐈𝐍  𝐒𝐀𝐘𝐀𝐀𝐀𝐀𝐀𝐀𝐍𝐆  𝐒𝐀𝐌𝐀  𝐃𝐄𝐃𝐄𝐄𝐄𝐄𝐄.`,
+
+`𝐂𝐀𝐑𝐀𝐀𝐀𝐀  𝐃𝐄𝐃𝐄𝐄𝐄  𝐊𝐄𝐓𝐀𝐖𝐀𝐀𝐀..
+𝐂𝐀𝐑𝐀  𝐃𝐄𝐃𝐄𝐄𝐄  𝐂𝐄𝐑𝐈𝐓𝐀𝐀𝐀𝐀,
+𝐁𝐀𝐇𝐊𝐀𝐍  𝐂𝐀𝐑𝐀𝐀𝐀  𝐃𝐄𝐃𝐄𝐄𝐄  𝐏𝐔𝐍𝐃𝐔𝐍𝐆  𝐏𝐔𝐍..
+𝐒𝐄𝐊𝐀𝐑𝐀𝐍𝐆  𝐒𝐄𝐌𝐔𝐀𝐍𝐘𝐀𝐀𝐀𝐀  𝐉𝐀𝐃𝐈  𝐁𝐀𝐆𝐈𝐀𝐍  𝐃𝐀𝐑𝐈  𝐇𝐀𝐑𝐈  𝐌𝐀𝐒  𝐀𝐊𝐒𝐉𝐒𝐊𝐊𝐒𝐉𝐒𝐊𝐒𝐊𝐒𝐉...🫶🥰🤍`,
+
+`𝐄𝐌𝐏𝐀𝐓  𝐁𝐔𝐋𝐀𝐍  𝐈𝐍𝐈  𝐌𝐔𝐍𝐆𝐊𝐈𝐍  𝐁𝐀𝐑𝐔  𝐀𝐖𝐀𝐋
+𝐌𝐀𝐒  𝐓𝐀𝐔  𝐍𝐃𝐀𝐀𝐀  𝐒𝐄𝐌𝐔𝐀𝐀𝐀  𝐍𝐀𝐍𝐓𝐈  𝐁𝐀𝐊𝐀𝐋  𝐒𝐄𝐋𝐀𝐋𝐔𝐔𝐔  𝐌𝐔𝐃𝐀𝐇
+𝐏𝐀𝐒𝐓𝐈  𝐀𝐃𝐀𝐀𝐀  𝐂𝐀𝐏𝐄𝐄𝐄  𝐄𝐆𝐄𝐎𝐎𝐎𝐎𝐎𝐎𝐎𝐎𝐎  𝐃𝐀𝐍  𝐒𝐀𝐋𝐀𝐇  𝐏𝐀𝐇𝐀𝐌.`,
+
+`𝐓𝐀𝐏𝐈  𝐒𝐀𝐓𝐔𝐔𝐔  𝐇𝐀𝐋   𝐘𝐀𝐍𝐆  𝐌𝐀𝐒  𝐘𝐀𝐊𝐈𝐍
+𝐇𝐀𝐓𝐈  𝐌𝐀𝐒  𝐁𝐔𝐀𝐓  𝐃𝐄𝐃𝐄𝐄𝐄  𝐍𝐃𝐀𝐀𝐀  𝐏𝐄𝐑𝐍𝐀𝐀𝐀  𝐁𝐄𝐑𝐔𝐁𝐀𝐇
+𝐍𝐃𝐀𝐀𝐀   𝐏𝐄𝐑𝐍𝐀𝐀𝐀   𝐑𝐀𝐆𝐔𝐔𝐔𝐔
+𝐃𝐀𝐍  𝐍𝐃𝐀𝐀𝐀𝐀𝐀   𝐏𝐄𝐑𝐍𝐀𝐀𝐀𝐀𝐀𝐀𝐀   𝐒𝐄𝐓𝐄𝐍𝐆𝐀𝐇².`,
+
+`𝐌𝐀𝐒  𝐂𝐔𝐌𝐀  𝐁𝐄𝐑𝐇𝐀𝐑𝐏..
+𝐃𝐄𝐃𝐄𝐄𝐄  𝐍𝐃𝐀𝐀𝐀  𝐂𝐔𝐌𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀   𝐉𝐀𝐃𝐈   𝐒𝐈𝐍𝐆𝐆𝐀𝐇
+𝐓𝐀𝐏𝐈  𝐉𝐀𝐃𝐈   𝐑𝐔𝐌𝐀𝐇   𝐅𝐎𝐑𝐄𝐕𝐄𝐑.. 🥹🤍`,
+
+`𝐌𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐂𝐘   𝐔𝐃𝐀𝐀𝐀𝐀𝐀   𝐍𝐄𝐑𝐈𝐌𝐀𝐀𝐀   𝐌𝐀𝐒
+𝐃𝐄𝐍𝐆𝐀𝐍   𝐒𝐄𝐌𝐔𝐀𝐀𝐀𝐀𝐀   𝐊𝐄𝐊𝐔𝐑𝐀𝐍𝐆𝐀𝐍   𝐌𝐀𝐒.`,
+
+`𝐃𝐀𝐍  𝐒𝐄𝐋𝐀𝐌𝐀𝐀𝐀𝐀   𝐃𝐄𝐃𝐄𝐄𝐄   𝐌𝐀𝐒𝐈𝐇   𝐃𝐈   𝐒𝐈𝐍𝐈
+𝐌𝐀𝐒   𝐉𝐔𝐆𝐀𝐀𝐀𝐀   𝐀𝐊𝐀𝐍   𝐓𝐄𝐓𝐀𝐏   𝐃𝐈   𝐒𝐈𝐍𝐈 🫶🤍`
+
+];
+
+let i=0;
+
+function check(){
+if(document.getElementById("pw").value===password){
+document.getElementById("login").style.display="none";
+document.getElementById("content").style.display="block";
+show();
+audio.play(); 
+}else{
+alert("𝐖𝐑𝐎𝐍𝐆 𝐏𝐀𝐒𝐒𝐖𝐎𝐑𝐃 𝐁𝐀𝐁𝐘 🤍");
+}
 }
 
-function validateName(){
-  const v = (nameInput.value||'').trim().toLowerCase();
-  if(v === correctName){
-    hideMsg(); removeNameUI();
-    questionEl.textContent='𝐃𝐄𝐃𝐄 𝐒𝐀𝐘𝐀𝐍𝐆 𝐆𝐀 𝐒𝐀𝐌𝐀 𝐌𝐀𝐒‽';
-    leftBtn.textContent='𝐒𝐀𝐘𝐀𝐍𝐆 𝐃𝐎𝐍𝐆';
-    rightBtn.textContent='𝐒𝐀𝐘𝐀𝐍𝐆 𝐁𝐀𝐍𝐆𝐄𝐓';
-    choiceWrap.classList.remove('hidden');
+function show(){
+const el=document.getElementById("text");
+el.innerHTML="";
+let c=0;
 
-    leftBtn.onclick = ()=>{ showMsg('𝐁𝐀𝐍𝐃𝐄𝐄𝐄𝐄𝐄𝐄𝐋 𝐉𝐀𝐖𝐀𝐁 𝐘𝐀𝐍𝐆 𝐁𝐄𝐍𝐄𝐑 !!',true); clearNext(); };
-    rightBtn.onclick = ()=>{
-      hideMsg(); choiceWrap.classList.add('hidden');
-      questionEl.textContent='𝐘𝐀𝐀 𝐌𝐀𝐒 𝐓𝐀𝐔 𝐒𝐀𝐘𝐀𝐍𝐆. 𝐌𝐀𝐒 𝐋𝐄𝐁𝐈𝐇 𝐒𝐀𝐘𝐀𝐍𝐆 𝐃𝐄𝐃𝐄 𝐋𝐄𝐁𝐈𝐇 𝐃𝐀𝐑𝐈 𝐀𝐏𝐀𝐏𝐔𝐍 𝐈 𝐋𝐎𝐕𝐄𝐄 𝐘𝐎𝐔𝐔 𝐒𝐎𝐎 𝐌𝐔𝐂𝐇 🫶🤍';
-      setNext('几乇乂ㄒ','qJanji');
-    };
-  } else { showMsg('𝐒𝐀𝐋𝐀𝐇 𝐒𝐀𝐘𝐀𝐍𝐆 𝐈𝐒𝐈 𝐘𝐀𝐍𝐆 𝐁𝐄𝐍𝐄𝐑 𝐃𝐎𝐍𝐆 🤍',true); }
+let typing=setInterval(()=>{
+if(c<p[i].length){
+el.innerHTML += p[i][c];
+c++;
+}else{
+clearInterval(typing);
+document.getElementById("next").style.display="inline-block";
+}
+},25);
 }
 
-function qJanji(){
-  hideMsg();
-  questionEl.textContent='𝐃𝐄𝐃𝐄 𝐉𝐀𝐍𝐉𝐈 𝐍𝐃𝐀 𝐁𝐎𝐋𝐄 𝐁𝐀𝐍𝐃𝐄𝐋 𝐘𝐀𝐇‽';
-  choiceWrap.classList.remove('hidden'); clearNext();
-  leftBtn.textContent='𝐍𝐃𝐀 𝐌𝐀𝐔 𝐖𝐋𝐄 😝';
-  rightBtn.textContent='𝐈𝐘𝐀 𝐌𝐀𝐒 🤍';
-  leftBtn.onclick=()=>showMsg('𝐌𝐀𝐒 𝐁𝐈𝐋𝐀𝐍𝐆 𝐍𝐃𝐀𝐀𝐀 𝐁𝐎𝐋𝐄𝐄𝐄𝐄𝐄𝐄 𝐁𝐀𝐍𝐃𝐄𝐄𝐋 😒',true);
-  rightBtn.onclick=()=>{
-    hideMsg(); choiceWrap.classList.add('hidden');
-    questionEl.textContent='𝐃𝐄𝐃𝐄 𝐇𝐀𝐑𝐔𝐒 𝐍𝐔𝐑𝐔𝐓 𝐓𝐄𝐑𝐔𝐒 𝐒𝐀𝐌𝐀 𝐌𝐀𝐒 𝐌𝐀𝐒𝐈𝐇 𝐁𝐀𝐋𝐈𝐓𝐀 𝐆𝐀 𝐁𝐎𝐋𝐄𝐇 𝐍𝐆𝐄𝐋𝐀𝐖𝐀𝐍 𝐒𝐀𝐌𝐀 𝐘𝐀𝐍𝐆 𝐁𝐈𝐌𝐁𝐄𝐋 😝😝';
-    setNext('几乇乂ㄒ','qUmur');
-  };
+function nextText(){
+i++;
+if(i<p.length){
+document.getElementById("next").style.display="none";
+document.getElementById("text").innerHTML="";
+show();
+}else{
+document.getElementById("next").style.display="none";
+}
 }
 
-function qUmur(){
-  hideMsg(); questionEl.textContent='𝐁𝐄𝐑𝐀𝐏𝐀 𝐔𝐌𝐔𝐑 𝐃𝐄𝐃𝐄‽';
-  choiceWrap.classList.remove('hidden'); clearNext();
-  leftBtn.textContent='5'; rightBtn.textContent='27';
-  leftBtn.onclick=()=>{
-    hideMsg(); choiceWrap.classList.add('hidden');
-    questionEl.textContent='𝐘𝐀𝐀 𝐌𝐀𝐒 𝐓𝐀𝐔 𝐃𝐄𝐃𝐄 𝐌𝐀𝐒𝐈𝐇 𝟓 𝐓𝐀𝐇𝐔𝐍 𝐌𝐀𝐔 𝐁𝐄𝐂𝐀𝐔𝐒𝐄 𝐌𝐀𝐔 𝐁𝐄𝐑𝐀𝐏𝐀 𝐏𝐔𝐍 𝐔𝐌𝐔𝐑 𝐃𝐄𝐃𝐄. 𝐃𝐈 𝐃𝐄𝐏𝐀𝐍 𝐌𝐀𝐒 𝐃𝐄𝐃𝐄 𝐓𝐄𝐏𝐀𝐏 𝐋𝐀𝐇 𝐁𝐎𝐂𝐈𝐋 𝐘𝐀𝐍𝐆 𝐌𝐀𝐒𝐈𝐇 𝐁𝐔𝐓𝐔𝐇 𝐁𝐈𝐌𝐁𝐈𝐍𝐆𝐀𝐍 𝐀𝐊𝐒𝐉𝐀𝐊𝐒𝐉𝐊 🤍🫶';
-    setNext('几乇乂ㄒ','showCobaButton');
-  };
-  rightBtn.onclick=()=>showMsg('𝐃𝐀𝐋𝐀𝐌 𝐇𝐀𝐓𝐈 : 𝐈𝐇 𝐄𝐌𝐀𝐍𝐆 𝐃𝐄𝐃𝐄 𝐁𝐎𝐂𝐈𝐋 😭',true);
+/* ===== MUSIC SYSTEM ===== */
+const songs = [
+ "lovely.mp3",
+ "lovely2.mp3",
+ "lovely3.mp3",
+ "lovely4.mp3"
+];
+
+let index=0;
+let looping=false;
+const audio=document.getElementById("audio");
+
+audio.src=songs[0];
+
+function togglePlayer(){
+let c=document.getElementById("controls");
+c.style.display=(c.style.display=="flex")?"none":"flex";
 }
 
-let clickCount=0;
-function showCobaButton(){
-  clearNext();
-  const cobaBtn=document.createElement('button');
-  cobaBtn.className='next'; cobaBtn.innerText='𝐂𝐎𝐁𝐀 𝐏𝐄𝐍𝐂𝐄𝐓 5 𝐊𝐀𝐋𝐈 <3';
-  nextWrap.appendChild(cobaBtn);
-  cobaBtn.onclick=()=>{
-    clickCount++;
-    if(clickCount>=5){ showHandwritingTab(); }
-  };
+function togglePlay(){
+if(audio.paused){audio.play();}else{audio.pause();}
 }
 
-function showHandwritingTab(){
-  document.getElementById('card').innerHTML = '';
-  const area=document.createElement('div');
-  area.style.marginTop='20px';
-  area.style.fontSize='18px';
-  area.style.lineHeight='1.8';
-  area.style.fontWeight='600';
-  area.style.whiteSpace='pre-wrap';
-  area.style.opacity='0.95';
-  document.getElementById('card').appendChild(area);
-
-  const text=[
-`𝐌𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐂𝐘 𝐘𝐀𝐀𝐀𝐀𝐀𝐀 𝐒𝐀𝐘𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐍𝐆 𝐔𝐃𝐀𝐀𝐀𝐀𝐀𝐀𝐀 𝐌𝐀𝐔𝐔𝐔 𝐁𝐄𝐑𝐓𝐀𝐇𝐀𝐍 𝐒𝐀𝐌𝐀𝐀𝐀 𝐌𝐀𝐒 𝐒𝐀𝐌𝐏𝐄𝐄𝐄𝐄 𝐃𝐄𝐓𝐈𝐊 𝐈𝐍𝐈. 𝐌𝐀𝐒 𝐁𝐄𝐍𝐄𝐑 𝐁𝐄𝐍𝐄𝐑 𝐁𝐀𝐍𝐆𝐆𝐀𝐀𝐀 𝐁𝐀𝐍𝐆𝐄𝐓 𝐏𝐔𝐍𝐘𝐀𝐀𝐀𝐀 𝐃𝐄𝐃𝐄𝐄𝐄𝐄𝐄𝐄. 𝐉𝐀𝐃𝐈𝐈𝐍 𝐃𝐄𝐃𝐄𝐄𝐄𝐄 𝐒𝐄𝐁𝐀𝐆𝐀𝐈 𝐏𝐀𝐒𝐀𝐍𝐆𝐀𝐍 𝐒𝐄𝐇𝐈𝐃𝐔𝐏 𝐒𝐄𝐌𝐀𝐓𝐈 𝐌𝐀𝐒.`,
-`𝐌𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐂𝐘 𝐉𝐔𝐆𝐀𝐀𝐀𝐀 𝐔𝐃𝐀𝐀𝐀𝐀 𝐒𝐄𝐌𝐏𝐄𝐓𝐈𝐍 𝐉𝐀𝐖𝐀𝐁 𝐒𝐄𝐌𝐔𝐀𝐀𝐀 𝐏𝐄𝐑𝐓𝐀𝐍𝐘𝐀𝐀𝐍 𝐃𝐀𝐑𝐈 𝐌𝐀𝐒 𝐗𝐈𝐗𝐈𝐗𝐈. 𝐌𝐀𝐒 𝐇𝐀𝐑𝐀𝐏 𝐃𝐄𝐃𝐄𝐄𝐄 𝐒𝐔𝐊𝐀𝐀 𝐘𝐀𝐀𝐀𝐀𝐇`,
-`𝐃𝐀𝐍 𝐌𝐀𝐒 𝐁𝐄𝐍𝐄𝐑 𝐁𝐄𝐍𝐄𝐑 𝐌𝐈𝐍𝐓𝐀𝐀𝐀 𝐌𝐀𝐀𝐅 𝐊𝐀𝐋𝐎𝐎𝐎 𝐊𝐀𝐃𝐀𝐍𝐆 𝐌𝐀𝐒 𝐍𝐆𝐄𝐁𝐔𝐀𝐓 𝐃𝐄𝐃𝐄𝐄 𝐍𝐀𝐍𝐆𝐈𝐒 𝐃𝐄𝐃𝐄𝐄 𝐒𝐄𝐃𝐈𝐇. 𝐌𝐀𝐀𝐅𝐈𝐍 𝐌𝐀𝐒.`,
-`𝐈 𝐋𝐎𝐕𝐄𝐄𝐄 𝐘𝐎𝐔𝐔𝐔𝐔𝐔𝐔 𝐃𝐄𝐃𝐄𝐄𝐄 𝐌𝐎𝐑𝐄𝐄𝐄 𝐓𝐇𝐀𝐍 𝐘𝐎𝐔 𝐊𝐍𝐎𝐖 𝐌𝐖𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐇`
-  ];
-
-  let p=0;
-  function typePara(){
-    if(p>=text.length) return;
-    let t=text[p]; 
-    let i=0; 
-    let cur=document.createElement('div'); 
-    cur.style.marginBottom='16px';
-    area.appendChild(cur);
-    function typeChar(){
-      if(i<t.length){
-        cur.textContent+=t[i];
-        i++;
-        setTimeout(typeChar,35 + Math.random()*20);
-      } else {
-        p++;
-        setTimeout(typePara,600);
-      }
-    }
-    typeChar();
-  }
-  typePara();
+function nextSong(){
+index++;
+if(index>=songs.length) index=0;
+audio.src=songs[index];
+audio.play();
 }
 
-/* ---------------- hearts ---------------- */
-setInterval(()=>{
-  const h=document.createElement('div');
-  h.className='heart';
-  h.textContent='🤍';
-  h.style.left=Math.random()*100+'vw';
-  h.style.animationDuration=(3+Math.random()*3)+'s';
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),4500);
-},300);
+function prevSong(){
+index--;
+if(index<0) index=songs.length-1;
+audio.src=songs[index];
+audio.play();
+}
+
+function toggleLoop(){
+looping=!looping;
+audio.loop=looping;
+}
+
+audio.onended=function(){
+if(!audio.loop){ nextSong(); }
+};
 </script>
+
 </body>
   </html>
